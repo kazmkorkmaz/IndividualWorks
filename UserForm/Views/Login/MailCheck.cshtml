@@ -1,0 +1,29 @@
+﻿@model UserForm.Models.UserInformations
+@{
+    ViewData["Title"] = "MailCheck";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>MailCheck</h1>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<div class="form-group">
+    <label for="MailCheck" class="control-label">Mail Code</label>
+    <input type="text" class="form-control" name="MailCheck" id="MailCheck" value="" />
+</div>
+<div class="form-group">   
+    <input type="submit" class="btn btn-primary" id="Login" name="Login" onclick="CheckMail()" value="Verify" />
+    <span style="color:gray"><i>Maile Gelen şifreyi yukarı yaz !</i></span>
+</div>
+
+<script>
+    function CheckMail() {
+        var realCode = localStorage.getItem("mailCode");
+        var mailCode = $("#MailCheck").val();
+        if (realCode == mailCode) {
+            window.location.href = "/Home/Index";
+        }
+        else {
+            alert("hata");
+        }
+    }
+</script>
