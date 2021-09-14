@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Car>
+
+    <h1>Cars and Owners</h1> 
+    <div class="row">
+        <div class="col-sm-8">
+            <h3>Table of Cars</h3>
+            <table id="car-table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>
+                            <input type="button" value="Owners" class="btn btn-sm btn-primary" onclick="getCarOwnersUsinAjax(@item.Id)" />
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-4">
+            <h3>Table Of Owners</h3>
+            <table id="ownerTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+@section scripts{
+<script type="text/javascript">
+    function getCarOwnersUsinAjax(carId) {
+        $.ajax(
+            {
+                url:"@Url.Action("GetCarOwners","Home")",
+                type: "POST",
+                data: { CarId: carId },
+                dataType: "json",
+                success: function (response) {
+                    $("#ownerTable tbody tr").remove();
+                    console.log(response);
+                    if (response.length == 0) {
+                        $("#ownerTable").append('<tr><td>Owner not found!</td></tr>');
+                    } else {
+                        response.forEach(function (owner) {
+                            addPersonOwnersTable(owner.id, owner.name);
+                        });
+                    }
+
+                },
+                failure: function (response) {
+                    alert(response);
+                }
+
+            }
+        );
+    }
+    function addPersonOwnersTable(id, name) {
+        $("#ownerTable").append('<tr><td>' + id + '</td><td>' + name+'</td></tr>');
+    }
+</script>
+
+
+}
