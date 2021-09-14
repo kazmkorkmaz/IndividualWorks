@@ -1,0 +1,39 @@
+﻿@model List<Movie>
+@{
+    ViewData["Title"] = "Popular Movies";
+}
+
+<h1>GetMovies</h1>
+
+
+<table  class="table table-striped">
+    <thead>
+        <tr>
+            <th>Poster</th>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Language</th>
+            <th>Popularity</th>
+            <th>Release Date</th>
+            <th>Overview</th>
+         </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td><img src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2/@item.poster_path" alt="Alternate Text" width="100" /></td>
+            <td>@item.Id</td>
+            <td>@item.original_title</td>
+            <td>@item.original_language</td>
+            <td>@item.popularity</td>
+            <td>@item.release_date</td>
+            <td>@item.Overview</td>
+           
+        </tr>
+
+
+        }
+    </tbody>
+   
+</table>

@@ -1,0 +1,36 @@
+﻿@model List<TvSeries>
+@{
+    ViewData["Title"] = "GetTvSeries";
+}
+
+<h1>GetTvSeries</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Poster</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Popularity</th>
+            <th>Release Date</th>
+            <th>Overview</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td><img src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2/@item.poster_path" alt="Alternate Text" width="100" /></td>
+            <td>@item.Id</td>
+            <td>@item.name</td>
+            <td>@item.popularity</td>
+            <td>@item.first_air_date</td>
+            <td>@item.overview</td>
+
+        </tr>
+
+
+        }
+    </tbody>
+
+</table>
