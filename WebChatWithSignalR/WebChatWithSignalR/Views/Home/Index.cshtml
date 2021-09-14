@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+    #container {
+        margin: auto;
+        width: 50%;
+           }
+</style>
+<div class="text-center">
+    <h1 class="display-4">Welcome to WebChat App</h1>
+    <hr />
+    <div class="container" id="container">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="Email" class="control-label">Email</label>
+                <input type="text" class="form-control" name="Email" id="Email" value="" />
+            </div>
+            <div class="form-group">
+                <label for="Password" class="control-label">Password</label>
+                <input type="text" class="form-control" name="Password" id="Password" value="" />
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" id="Login" name="Login" onclick="Log()" value="Login" />
+            </div>
+            <label>Don't have a account</label>
+            <a href="/Home/Register">Register</a>
+        </div>
+
+       
+    </div>
+</div>
+<script>
+    function Log() {
+    var email = $("#Email").val();
+    var password = $("#Password").val();
+    $.ajax({
+        method: "POST",
+        url:"@Url.Action("Login", "Home")",
+        data: {
+            email, password
+        },
+        success: (resp) => {
+            if (resp !=0) {
+                window.location.href = "/Home/Chat?id=" + resp;
+            }
+            else {
+                alert("Hata");
+            }
+        },
+        error: (err) => {
+            $("body").html("Hata");
+        }
+
+    });
+    }
+
+</script>

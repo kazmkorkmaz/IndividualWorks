@@ -1,0 +1,93 @@
+﻿@model a.Users
+@{
+    ViewData["Title"] = "Chat";
+}
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<h2>Web Chat</h2>
+<span>User:@Model.Name @Model.Surname</span>
+<br />
+<a href="/Home/Logout?id=@Model.Id">Logout</a>
+<hr />
+
+
+<div id="connectionState"></div>
+<div class="container">
+    <div class="row ">
+        <div class="card col-sm-4">
+            <h6 class="card-title">Online Users</h6>
+            <ul id="clients" class="list-group list-group-flush">
+            </ul>
+        </div>
+        <div class="col-sm-8">
+
+            <div id="selectGroup">
+                <label>Select Group: </label>
+                <input type="radio" name="group" value="A">A
+                <input type="radio" name="group" value="B">B
+                <input type="radio" name="all" value="All">ALL
+                <input class="btn btn-secondary btn-sm" style="width:90px" type="button" id="JoinGroup" value="Join" />
+            </div>
+            <div id="messageSend">
+                <input type="text" name="Message" id="Message" placeholder="Message" />
+                <input type="button" id="SendMessageButton" value="Send" />
+            </div>
+            <div id="ReceivedMessage">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/messagehub").build();
+    connection.start();
+    const connect = $("#connectionState");
+     var user = "@Model.Name @Model.Surname";
+    $("#SendMessageButton").click(() => {
+        var message = $("#Message").val();
+        var group = $("input[name=group]:checked").val();
+        if (group == "A" || group == "B") {
+            connection.invoke("SendMessageToGroup", group, user, message).catch(error => console.log(`Hata ${error}`));
+        }
+        var all = $("input[name=all]:checked").val();
+        if (all == "All") {
+            connection.invoke("SendMessageToAll", all, user, message).catch(error => console.log(`Hata ${error}`));
+        }
+
+
+    });
+    connection.on("ReceiveMessage", (user, message) => {
+                $("#ReceivedMessage").append(user+":"+message + "<br>");
+    });
+
+
+    $("#JoinGroup").click(() => {
+        var group = $("input[name=group]:checked").val();
+        connection.invoke("AddToGroup", group,user).catch(error => console.log(`Hata ${error}`));
+    });
+
+    connection.on("UserJoin", user => {
+        connect.css("background-color", "blue");
+        connect.css("color", "black");
+        connect.html(`${user} join the chat.`);
+        connect.fadeIn(2000, () => {
+            setTimeout(() => {
+                connect.fadeOut(2000);
+            }, 2000)
+        });
+    });
+    connection.on("clients", clientsData => {
+        let text = "";
+        $.each(clientsData, (index, item) => {
+            /*   text += `<li>${item.userName} ${item.groupName}</li>`;*/
+            text += `  <li class="list-group-item">
+                 <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">${item.userName} ${item.groupName}</h5>
+                </div>
+            </li>`;
+        });
+        $("#clients").html(text);
+    });
+</script>
+
