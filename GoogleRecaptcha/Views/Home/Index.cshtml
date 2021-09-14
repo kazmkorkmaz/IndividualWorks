@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://www.google.com/recaptcha/api.js?render=6Len6SkcAAAAAJ5Knkpv8_8BPVuEsKXAfDvahBlJ"></script>
+
+<div class="form-group">
+    <label for="Name" class="control-label">Name</label>
+    <input type="text" class="form-control" name="Name" id="Name" value="" />
+</div>
+<div class="form-group">
+    <label for="Email" class="control-label">Email</label>
+    <input type="text" class="form-control" name="Email" id="Email" value="" />
+</div>
+<div class="form-group">
+    <label for="Message" class="control-label">Message</label>
+    <input type="text" class="form-control" name="Message" id="Message" value="" />
+</div>
+
+
+
+
+<button onclick="Submit()">Submit</button>
+
+
+<script>
+    var customToken = "";
+    function Submit() {
+        /*      e.preventDefault();*/
+        grecaptcha.ready(function () {
+            grecaptcha.execute('6Len6SkcAAAAAJ5Knkpv8_8BPVuEsKXAfDvahBlJ', { action: 'submit' }).then(function (token) {
+                customToken = token;
+                checkResponse();
+            });
+        });
+    }
+    function checkResponse() {
+        $.ajax({
+            method: "POST",
+            url: "@Url.Action("RecaptchaControl", "Home")",
+            data: { data: customToken },
+            success: (resp) => {
+                if (resp == true) {
+                    window.location.href = "/Home/Success";
+                }
+                else {
+                    alert("Hata");
+                }
+            },
+            error: (err) => {
+                $("body").html("Hata");
+            }
+        });
+    }
+
+</script>
